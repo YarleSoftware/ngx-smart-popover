@@ -27,7 +27,7 @@
                         ],
                         "styles": [
                             "src/styles.css",
-                            "projects/ngx-smart-popover/src/lib/popover-content.component.scss"
+                            "projects/ngx-smart-popover/src/lib/ngx-popover.component.scss"
                         ],
                         "scripts": [],
                         "baseHref": "/ngx-smart-popover/",

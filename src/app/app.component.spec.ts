@@ -1,5 +1,5 @@
-import { PopoverDirective } from './../../projects/ngx-smart-popover/src/lib/popover.directive';
-import { PopoverContentComponent } from './../../projects/ngx-smart-popover/src/lib/popover-content.component';
+import { NgxPopoverDirective } from '../../projects/ngx-smart-popover/src/lib/ngx-popover.directive';
+import { NgxPopoverComponent } from '../../projects/ngx-smart-popover/src/lib/ngx-popover.component';
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
@@ -8,8 +8,8 @@ describe('AppComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 AppComponent,
-                PopoverContentComponent,
-                PopoverDirective
+                NgxPopoverComponent,
+                NgxPopoverDirective
             ],
         }).compileComponents();
     }));

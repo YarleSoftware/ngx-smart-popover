@@ -1,4 +1,4 @@
-export class PopoverPlacement {
+export class NgxPopoverPlacement {
     public static readonly Bottom = 'bottom';
     public static readonly BottomLeft = 'bottom-left';
     public static readonly BottomRight = 'bottom-right';
