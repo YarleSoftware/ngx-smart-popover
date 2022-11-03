@@ -27,7 +27,7 @@
                         ],
                         "styles": [
                             "src/styles.css",
-                            "projects/ngx-smart-popover/src/lib/popover-content.component.scss"
+                            "projects/ngx-smart-popover/src/lib/ngx-popover.component.scss"
                         ],
                         "scripts": [],
                         "baseHref": "/ngx-smart-popover/",
@@ -143,7 +143,7 @@
             "prefix": "lib",
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-ng-packagr:build",
+                    "builder": "@angular-devkit/build-angular:ng-packagr",
                     "options": {
                         "tsConfig": "projects/ngx-smart-popover/tsconfig.lib.json",
                         "project": "projects/ngx-smart-popover/ng-package.json"

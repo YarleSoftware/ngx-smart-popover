@@ -20,8 +20,8 @@ import {
     Type,
     EmbeddedViewRef
 } from '@angular/core';
-import { PopoverContentComponent } from './popover-content.component';
-import { PopoverPlacement } from './popover.placement';
+import { NgxPopoverComponent } from './ngx-popover.component';
+import { NgxPopoverPlacement } from './ngx-popover.placement';
 
 
 /**
@@ -32,12 +32,12 @@ import { PopoverPlacement } from './popover.placement';
     selector: '[ngx-popover]',
     exportAs: 'ngx-popover'
 })
-export class PopoverDirective implements OnChanges {
+export class NgxPopoverDirective implements OnChanges {
     // -------------------------------------------------------------------------
     // Properties
     // -------------------------------------------------------------------------
-    protected popoverContentComponent = PopoverContentComponent;
-    protected popover: ComponentRef<PopoverContentComponent>;
+    protected ngxPopoverComponent = NgxPopoverComponent;
+    protected ngxPopover: ComponentRef<NgxPopoverComponent>;
     protected visible: boolean;
 
     // -------------------------------------------------------------------------
@@ -54,19 +54,19 @@ export class PopoverDirective implements OnChanges {
     // -------------------------------------------------------------------------
     // Inputs / Outputs
     // -------------------------------------------------------------------------
-    @Input('ngx-popover') public content: string | PopoverContentComponent;
+    @Input('ngx-popover') public content: string | NgxPopoverComponent;
     @Input() public popoverSize: 'small' | 'medium-small' | 'medium' | 'large' | 'auto';
     @Input() public popoverDisabled: boolean;
     @Input() public popoverAnimation: boolean;
-    @Input() public popoverPlacement: PopoverPlacement;
+    @Input() public popoverPlacement: NgxPopoverPlacement;
     @Input() public popoverTitle: string;
     @Input() public popoverOnHover = true;
     @Input() public popoverCloseOnClickOutside: boolean;
     @Input() public popoverCloseOnMouseOutside: boolean;
     @Input() public popoverDismissTimeout = 0;
     @Input() public appendToBody: boolean;
-    @Output() public onShown = new EventEmitter<PopoverDirective>();
-    @Output() public onHidden = new EventEmitter<PopoverDirective>();
+    @Output() public onShown = new EventEmitter<NgxPopoverDirective>();
+    @Output() public onHidden = new EventEmitter<NgxPopoverDirective>();
 
     // -------------------------------------------------------------------------
     // Event listeners
@@ -154,7 +154,7 @@ export class PopoverDirective implements OnChanges {
     }
 
     protected removeComponent(componentRef: ComponentRef<any>) {
-        if (this.popover) {
+        if (this.ngxPopover) {
             if (this.appendToBody) {
                 this.appRef.detachView(componentRef.hostView);
             }
@@ -184,9 +184,9 @@ export class PopoverDirective implements OnChanges {
                 return;
             }
 
-            this.popover = this.createComponent(this.popoverContentComponent);
-            const popover = this.popover.instance as PopoverContentComponent;
-            popover.popover = this;
+            this.ngxPopover = this.createComponent(this.ngxPopoverComponent);
+            const popover = this.ngxPopover.instance as NgxPopoverComponent;
+            popover.ngxPopover = this;
             popover.content = this.content as string;
             if (this.popoverPlacement !== undefined) {
                 popover.placement = this.popoverPlacement;
@@ -215,8 +215,8 @@ export class PopoverDirective implements OnChanges {
                 setTimeout(() => this.hide(), this.popoverDismissTimeout);
             }
         } else {
-            const popover = this.content as PopoverContentComponent;
-            popover.popover = this;
+            const popover = this.content as NgxPopoverComponent;
+            popover.ngxPopover = this;
             if (this.popoverPlacement !== undefined) {
                 popover.placement = this.popoverPlacement;
             }
@@ -256,10 +256,10 @@ export class PopoverDirective implements OnChanges {
         }
 
         this.visible = false;
-        this.removeComponent(this.popover);
+        this.removeComponent(this.ngxPopover);
 
-        if (this.content instanceof PopoverContentComponent) {
-            (this.content as PopoverContentComponent).hideFromPopover();
+        if (this.content instanceof NgxPopoverComponent) {
+            (this.content as NgxPopoverComponent).hideFromPopover();
         }
 
         this.cdr.detectChanges();
