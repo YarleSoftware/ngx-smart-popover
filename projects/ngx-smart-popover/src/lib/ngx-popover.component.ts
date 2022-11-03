@@ -15,11 +15,11 @@ import {
     ViewChild,
     HostListener
 } from '@angular/core';
-import { PopoverDirective } from './popover.directive';
-import { PopoverPlacement } from './popover.placement';
+import { NgxPopoverDirective } from './ngx-popover.directive';
+import { NgxPopoverPlacement } from './ngx-popover.placement';
 
 @Component({
-    selector: 'popover-content',
+    selector: 'ngx-popover',
     template: `
         <div #popoverDiv
             class="bs-popover-{{ effectivePlacement }} popover-content popover {{ parentClass }}"
@@ -47,12 +47,12 @@ import { PopoverPlacement } from './popover.placement';
         </div>
     `
 })
-export class PopoverContentComponent implements AfterViewInit, OnDestroy {
+export class NgxPopoverComponent implements AfterViewInit, OnDestroy {
     // -------------------------------------------------------------------------
     // Inputs / Outputs
     // -------------------------------------------------------------------------
     @Input() public content: string;
-    @Input() public placement: PopoverPlacement = PopoverPlacement.Top;
+    @Input() public placement: NgxPopoverPlacement = NgxPopoverPlacement.Top;
     @Input() public title: string;
     @Input() public parentClass: string;
     @Input() public animation = true;
@@ -66,7 +66,7 @@ export class PopoverContentComponent implements AfterViewInit, OnDestroy {
     // -------------------------------------------------------------------------
     @ViewChild('popoverDiv', { static: true }) public popoverDiv: ElementRef;
 
-    public popover: PopoverDirective;
+    public ngxPopover: NgxPopoverDirective;
     public onCloseFromOutside = new EventEmitter();
     public top = -10000;
     public left = -10000;
@@ -91,10 +91,10 @@ export class PopoverContentComponent implements AfterViewInit, OnDestroy {
      */
     public onDocumentMouseDown = (event: any) => {
         const element = this.element.nativeElement;
-        if (!element || !this.popover) {
+        if (!element || !this.ngxPopover) {
             return;
         }
-        if (element.contains(event.target) || this.popover.getElement().contains(event.target)) {
+        if (element.contains(event.target) || this.ngxPopover.getElement().contains(event.target)) {
             return;
         }
         this.onCloseFromOutside.emit(undefined);
@@ -152,18 +152,18 @@ export class PopoverContentComponent implements AfterViewInit, OnDestroy {
     public updatePosition(): void {
         // if visible, reposition
         if (this.opacity) {
-            const p = this.positionElements(this.popover.getElement(), this.popoverDiv.nativeElement, this.placement);
+            const p = this.positionElements(this.ngxPopover.getElement(), this.popoverDiv.nativeElement, this.placement);
             this.top = p.top;
             this.left = p.left;
         }
     }
 
     public show(): void {
-        if (!this.popover || !this.popover.getElement()) {
+        if (!this.ngxPopover || !this.ngxPopover.getElement()) {
             return;
         }
 
-        const p = this.positionElements(this.popover.getElement(), this.popoverDiv.nativeElement, this.placement);
+        const p = this.positionElements(this.ngxPopover.getElement(), this.popoverDiv.nativeElement, this.placement);
         this.top = p.top;
         this.left = p.left;
         this.isIn = true;
@@ -175,7 +175,7 @@ export class PopoverContentComponent implements AfterViewInit, OnDestroy {
         this.top = -10000;
         this.left = -10000;
         this.isIn = true;
-        this.popover.hide();
+        this.ngxPopover.hide();
     }
 
     public hideFromPopover(): void {
@@ -190,7 +190,7 @@ export class PopoverContentComponent implements AfterViewInit, OnDestroy {
     // Protected Methods
     // -------------------------------------------------------------------------
 
-    protected positionElements(hostEl: HTMLElement, targetEl: HTMLElement, positionStr: PopoverPlacement, appendToBody: boolean = false): { top: number, left: number } {
+    protected positionElements(hostEl: HTMLElement, targetEl: HTMLElement, positionStr: NgxPopoverPlacement, appendToBody: boolean = false): { top: number, left: number } {
         const positionStrParts = (positionStr as string).split(' ');
         let pos0 = positionStrParts[0];
         const pos1 = positionStrParts[1] || 'center';
@@ -232,47 +232,47 @@ export class PopoverContentComponent implements AfterViewInit, OnDestroy {
 
         let targetElPos: { top: number, left: number };
         switch (pos0) {
-            case PopoverPlacement.Right:
+            case NgxPopoverPlacement.Right:
                 targetElPos = {
                     top: shiftHeight[pos1](),
                     left: shiftWidth[pos0]()
                 };
                 break;
 
-            case PopoverPlacement.Left:
+            case NgxPopoverPlacement.Left:
                 targetElPos = {
                     top: shiftHeight[pos1](),
                     left: hostElPos.left - targetElWidth
                 };
                 break;
 
-            case PopoverPlacement.Bottom:
+            case NgxPopoverPlacement.Bottom:
                 targetElPos = {
                     top: shiftHeight[pos0](),
                     left: shiftWidth[pos1]()
                 };
                 break;
-            case PopoverPlacement.TopLeft:
+            case NgxPopoverPlacement.TopLeft:
                 targetElPos = {
                     top: hostElPos.top - targetElHeight,
                     left: shiftWidth['topOrBottomLeft']()
                 };
                 break;
-            case PopoverPlacement.TopRight:
+            case NgxPopoverPlacement.TopRight:
                 targetElPos = {
                     top: hostElPos.top - targetElHeight,
                     left: shiftWidth['topOrBottomRight']()
                 };
                 break;
-            case PopoverPlacement.BottomLeft:
+            case NgxPopoverPlacement.BottomLeft:
                 targetElPos = {
-                    top: shiftHeight[PopoverPlacement.Bottom](),
+                    top: shiftHeight[NgxPopoverPlacement.Bottom](),
                     left: shiftWidth['topOrBottomLeft']()
                 };
                 break;
-            case PopoverPlacement.BottomRight:
+            case NgxPopoverPlacement.BottomRight:
                 targetElPos = {
-                    top: shiftHeight[PopoverPlacement.Bottom](),
+                    top: shiftHeight[NgxPopoverPlacement.Bottom](),
                     left: shiftWidth['topOrBottomRight']()
                 };
                 break;
@@ -346,7 +346,7 @@ export class PopoverContentComponent implements AfterViewInit, OnDestroy {
     protected getEffectivePlacement(placement: string, hostElement: HTMLElement, targetElement: HTMLElement): string {
         const hostElBoundingRect = hostElement.getBoundingClientRect();
 
-        const desiredPlacement = placement || PopoverPlacement.Top;
+        const desiredPlacement = placement || NgxPopoverPlacement.Top;
 
         // Determines if a popover overflows in a direction when in a specific position.
         const overflows = {
@@ -386,293 +386,293 @@ export class PopoverContentComponent implements AfterViewInit, OnDestroy {
                 top: hostElBoundingRect.top - targetElement.offsetHeight < 0,
                 left: hostElBoundingRect.left - targetElement.offsetWidth < 0
             }
-        }
+        };
 
-        if (desiredPlacement === PopoverPlacement.Top) {
+        if (desiredPlacement === NgxPopoverPlacement.Top) {
             // If it overflows on the top AND left, go to bottom-right.
             if (overflows.positionTop.top && overflows.positionTop.left) {
-                return PopoverPlacement.BottomRight;
+                return NgxPopoverPlacement.BottomRight;
 
             // If it overflows on the top AND right, go to bottom-left.
             } else if (overflows.positionTop.top && overflows.positionTop.right) {
-                return PopoverPlacement.BottomLeft;
+                return NgxPopoverPlacement.BottomLeft;
 
             // If it only overflows on the top, go to bottom.
             } else if (overflows.positionTop.top) {
-                return PopoverPlacement.Bottom;
+                return NgxPopoverPlacement.Bottom;
 
             // If it only overflows to the right, go to top-left.
             } else if (overflows.positionTop.right) {
-                return PopoverPlacement.TopLeft;
+                return NgxPopoverPlacement.TopLeft;
 
             // If it only overflows to the left, go to top-right.
             } else if (overflows.positionTop.left) {
-                return PopoverPlacement.TopRight;
+                return NgxPopoverPlacement.TopRight;
 
             } else {
-                return PopoverPlacement.Top;
+                return NgxPopoverPlacement.Top;
             }
         }
 
-        if (desiredPlacement === PopoverPlacement.TopRight) {
+        if (desiredPlacement === NgxPopoverPlacement.TopRight) {
             // If it overflows on the top AND the right, try in the order: bottom, Bottom-left, left.
             if (overflows.positionTopRight.top && overflows.positionTopRight.right) {
                 if (overflows.positionBottom.bottom) {
-                    return PopoverPlacement.Left;
+                    return NgxPopoverPlacement.Left;
                 } else if (overflows.positionBottom.right) {
-                    return PopoverPlacement.BottomLeft;
+                    return NgxPopoverPlacement.BottomLeft;
                 } else {
-                    return PopoverPlacement.Bottom;
+                    return NgxPopoverPlacement.Bottom;
                 }
 
             // If it only overflows on the top, try in the order: right, bottom-right.
             } else if (overflows.positionTopRight.top) {
                 if (overflows.positionRight.top) {
-                    return PopoverPlacement.BottomRight;
+                    return NgxPopoverPlacement.BottomRight;
                 } else {
-                    return PopoverPlacement.Right;
+                    return NgxPopoverPlacement.Right;
                 }
 
             // If it only overflows on the right, try in the order: top, top-left.
             } else if (overflows.positionTopRight.right) {
                 if (overflows.positionTop.right) {
-                    return PopoverPlacement.TopLeft;
+                    return NgxPopoverPlacement.TopLeft;
                 } else {
-                    return PopoverPlacement.Top;
+                    return NgxPopoverPlacement.Top;
                 }
 
             } else {
-                return PopoverPlacement.TopRight;
+                return NgxPopoverPlacement.TopRight;
             }
         }
 
-        if (desiredPlacement === PopoverPlacement.Right) {
+        if (desiredPlacement === NgxPopoverPlacement.Right) {
             // If it overflows on the right AND the top, try in the order: bottom-right, bottom, bottom-left.
             if (overflows.positionRight.right && overflows.positionRight.top) {
                 if (overflows.positionBottomRight.right && overflows.positionBottom.right) {
-                    return PopoverPlacement.BottomLeft;
+                    return NgxPopoverPlacement.BottomLeft;
                 } else if (overflows.positionBottomRight.right) {
-                    return PopoverPlacement.Bottom;
+                    return NgxPopoverPlacement.Bottom;
                 } else {
-                    return PopoverPlacement.BottomRight;
+                    return NgxPopoverPlacement.BottomRight;
                 }
 
             // If it overflows on the right AND the bottom, try in the order: top-right, top, top-left.
             } else if (overflows.positionRight.right && overflows.positionRight.bottom) {
                 if (overflows.positionTopRight.right && overflows.positionTop.right) {
-                    return PopoverPlacement.TopLeft;
+                    return NgxPopoverPlacement.TopLeft;
                 } else if (overflows.positionTopRight.right) {
-                    return PopoverPlacement.Top;
+                    return NgxPopoverPlacement.Top;
                 } else {
-                    return PopoverPlacement.TopRight;
+                    return NgxPopoverPlacement.TopRight;
                 }
 
             // If it only overflows on the right, try all top positions from right to left, then try all bottom positions right to left.
             } else if (overflows.positionRight.right) {
                 if (overflows.positionTop.top) {
                     if (overflows.positionBottom.right) {
-                        return PopoverPlacement.BottomLeft;
+                        return NgxPopoverPlacement.BottomLeft;
                     } else if (overflows.positionBottomRight.right) {
-                        return PopoverPlacement.Bottom;
+                        return NgxPopoverPlacement.Bottom;
                     } else {
-                        return PopoverPlacement.BottomRight;
+                        return NgxPopoverPlacement.BottomRight;
                     }
                 } else {
                     if (overflows.positionTop.right) {
-                        return PopoverPlacement.TopLeft;
+                        return NgxPopoverPlacement.TopLeft;
                     } else if (overflows.positionTopRight.right) {
-                        return PopoverPlacement.Top;
+                        return NgxPopoverPlacement.Top;
                     } else {
-                        return PopoverPlacement.TopRight;
+                        return NgxPopoverPlacement.TopRight;
                     }
                 }
 
             // If it only over flows on the top, go bottom-right.
             } else if (overflows.positionRight.top) {
-                return PopoverPlacement.BottomRight;
+                return NgxPopoverPlacement.BottomRight;
 
             // If it only overflows on the bottom, go top-right.
             } else if (overflows.positionRight.bottom) {
-                return PopoverPlacement.TopRight;
+                return NgxPopoverPlacement.TopRight;
 
             } else {
-                return PopoverPlacement.Right;
+                return NgxPopoverPlacement.Right;
             }
         }
 
-        if (desiredPlacement === PopoverPlacement.BottomRight) {
+        if (desiredPlacement === NgxPopoverPlacement.BottomRight) {
             // If it overflows on the bottom AND the right, try in the order: top, top-left, left.
             if (overflows.positionBottomRight.bottom && overflows.positionBottomRight.right) {
                 if (overflows.positionTop.top) {
-                    return PopoverPlacement.Left;
+                    return NgxPopoverPlacement.Left;
                 } else if (overflows.positionTop.right) {
-                    return PopoverPlacement.TopLeft;
+                    return NgxPopoverPlacement.TopLeft;
                 } else {
-                    return PopoverPlacement.Top;
+                    return NgxPopoverPlacement.Top;
                 }
 
             // If it only overflows on the bottom, try in the order: right, top-right.
             } else if (overflows.positionBottomRight.bottom) {
                 if (overflows.positionRight.bottom) {
-                    return PopoverPlacement.TopRight;
+                    return NgxPopoverPlacement.TopRight;
                 } else {
-                    return PopoverPlacement.Right;
+                    return NgxPopoverPlacement.Right;
                 }
 
             // If it only overflows on the right, try in the order: bottom, bottom-left.
             } else if (overflows.positionBottomRight.right) {
                 if (overflows.positionBottom.right) {
-                    return PopoverPlacement.BottomLeft;
+                    return NgxPopoverPlacement.BottomLeft;
                 } else {
-                    return PopoverPlacement.Bottom;
+                    return NgxPopoverPlacement.Bottom;
                 }
 
             } else {
-                return PopoverPlacement.BottomRight;
+                return NgxPopoverPlacement.BottomRight;
             }
         }
 
-        if (desiredPlacement === PopoverPlacement.Bottom) {
+        if (desiredPlacement === NgxPopoverPlacement.Bottom) {
             // If it overflows on the bottom AND left, go to top-right.
             if (overflows.positionBottom.bottom && overflows.positionBottom.left) {
-                return PopoverPlacement.TopRight;
+                return NgxPopoverPlacement.TopRight;
 
             // If it overflows on the bottom AND right, go to top-left.
             } else if (overflows.positionBottom.bottom && overflows.positionBottom.right) {
-                return PopoverPlacement.TopLeft;
+                return NgxPopoverPlacement.TopLeft;
 
             // If it only overflows on the bottom, go to top.
             } else if (overflows.positionBottom.bottom) {
-                return PopoverPlacement.Top;
+                return NgxPopoverPlacement.Top;
 
             // If it only overflows to the right, go to bottom-left.
             } else if (overflows.positionBottom.right) {
-                return PopoverPlacement.BottomLeft;
+                return NgxPopoverPlacement.BottomLeft;
 
             // If it only overflows to the left, go to bottom-right.
             } else if (overflows.positionBottom.left) {
-                return PopoverPlacement.BottomRight;
+                return NgxPopoverPlacement.BottomRight;
 
             } else {
-                return PopoverPlacement.Bottom;
+                return NgxPopoverPlacement.Bottom;
             }
         }
 
-        if (desiredPlacement === PopoverPlacement.BottomLeft) {
+        if (desiredPlacement === NgxPopoverPlacement.BottomLeft) {
             // If it overflows on the bottom AND the left, try in the order: top, top-right, right.
             if (overflows.positionBottomLeft.bottom && overflows.positionBottomLeft.left) {
                 if (overflows.positionTop.top) {
-                    return PopoverPlacement.Right;
+                    return NgxPopoverPlacement.Right;
                 } else if (overflows.positionTop.left) {
-                    return PopoverPlacement.TopRight;
+                    return NgxPopoverPlacement.TopRight;
                 } else {
-                    return PopoverPlacement.Top;
+                    return NgxPopoverPlacement.Top;
                 }
 
             // If it only overflows on the bottom, try in the order: left, top-left.
             } else if (overflows.positionBottomLeft.bottom) {
                 if (overflows.positionLeft.bottom) {
-                    return PopoverPlacement.TopLeft;
+                    return NgxPopoverPlacement.TopLeft;
                 } else {
-                    return PopoverPlacement.Left;
+                    return NgxPopoverPlacement.Left;
                 }
 
             // If it only overflows on the left, try in the order: bottom, bottom-right.
             } else if (overflows.positionBottomLeft.left) {
                 if (overflows.positionBottom.left) {
-                    return PopoverPlacement.BottomRight;
+                    return NgxPopoverPlacement.BottomRight;
                 } else {
-                    return PopoverPlacement.Bottom;
+                    return NgxPopoverPlacement.Bottom;
                 }
 
             } else {
-                return PopoverPlacement.BottomLeft;
+                return NgxPopoverPlacement.BottomLeft;
             }
         }
 
-        if (desiredPlacement === PopoverPlacement.Left) {
+        if (desiredPlacement === NgxPopoverPlacement.Left) {
             // If it overflows on the left AND the top, try in the order: bottom-left, bottom, bottom-right.
             if (overflows.positionLeft.left && overflows.positionLeft.top) {
                 if (overflows.positionBottomLeft.left && overflows.positionBottom.left) {
-                    return PopoverPlacement.BottomRight;
+                    return NgxPopoverPlacement.BottomRight;
                 } else if (overflows.positionBottomRight.right) {
-                    return PopoverPlacement.Bottom;
+                    return NgxPopoverPlacement.Bottom;
                 } else {
-                    return PopoverPlacement.BottomLeft;
+                    return NgxPopoverPlacement.BottomLeft;
                 }
 
             // If it overflows on the left AND the bottom, try in the order: top-left, top, top-right.
             } else if (overflows.positionLeft.left && overflows.positionLeft.bottom) {
                 if (overflows.positionTopLeft.left && overflows.positionTop.left) {
-                    return PopoverPlacement.TopRight;
+                    return NgxPopoverPlacement.TopRight;
                 } else if (overflows.positionTopLeft.left) {
-                    return PopoverPlacement.Top;
+                    return NgxPopoverPlacement.Top;
                 } else {
-                    return PopoverPlacement.TopLeft;
+                    return NgxPopoverPlacement.TopLeft;
                 }
 
             // If it only overflows on the left, try all top positions from left to right, then try all bottom positions left to right.
             } else if (overflows.positionLeft.left) {
                 if (overflows.positionTop.top) {
                     if (overflows.positionBottom.left) {
-                        return PopoverPlacement.BottomRight;
+                        return NgxPopoverPlacement.BottomRight;
                     } else if (overflows.positionBottomLeft.left) {
-                        return PopoverPlacement.Bottom;
+                        return NgxPopoverPlacement.Bottom;
                     } else {
-                        return PopoverPlacement.BottomLeft;
+                        return NgxPopoverPlacement.BottomLeft;
                     }
                 } else {
                     if (overflows.positionTop.left) {
-                        return PopoverPlacement.TopRight;
+                        return NgxPopoverPlacement.TopRight;
                     } else if (overflows.positionTopLeft.left) {
-                        return PopoverPlacement.Top;
+                        return NgxPopoverPlacement.Top;
                     } else {
-                        return PopoverPlacement.TopLeft;
+                        return NgxPopoverPlacement.TopLeft;
                     }
                 }
 
             // If it only over flows on the top, go bottom-left.
             } else if (overflows.positionLeft.top) {
-                return PopoverPlacement.BottomLeft;
+                return NgxPopoverPlacement.BottomLeft;
 
             // If it only overflows on the bottom, go top-left.
             } else if (overflows.positionLeft.bottom) {
-                return PopoverPlacement.TopLeft;
+                return NgxPopoverPlacement.TopLeft;
 
             } else {
-                return PopoverPlacement.Left;
+                return NgxPopoverPlacement.Left;
             }
         }
 
-        if (desiredPlacement === PopoverPlacement.TopLeft) {
+        if (desiredPlacement === NgxPopoverPlacement.TopLeft) {
             // If it overflows on the top AND the left, try in the order: bottom, Bottom-right, right.
             if (overflows.positionTopLeft.top && overflows.positionTopLeft.left) {
                 if (overflows.positionBottom.bottom) {
-                    return PopoverPlacement.Right;
+                    return NgxPopoverPlacement.Right;
                 } else if (overflows.positionBottom.left) {
-                    return PopoverPlacement.BottomRight;
+                    return NgxPopoverPlacement.BottomRight;
                 } else {
-                    return PopoverPlacement.Bottom;
+                    return NgxPopoverPlacement.Bottom;
                 }
 
             // If it only overflows on the top, try in the order: left, bottom-left.
             } else if (overflows.positionTopLeft.top) {
                 if (overflows.positionLeft.top) {
-                    return PopoverPlacement.BottomLeft;
+                    return NgxPopoverPlacement.BottomLeft;
                 } else {
-                    return PopoverPlacement.Left;
+                    return NgxPopoverPlacement.Left;
                 }
 
             // If it only overflows on the left, try in the order: top, top-right.
             } else if (overflows.positionTopLeft.left) {
                 if (overflows.positionTop.left) {
-                    return PopoverPlacement.TopRight;
+                    return NgxPopoverPlacement.TopRight;
                 } else {
-                    return PopoverPlacement.Top;
+                    return NgxPopoverPlacement.Top;
                 }
 
             } else {
-                return PopoverPlacement.TopLeft;
+                return NgxPopoverPlacement.TopLeft;
             }
         }
 
